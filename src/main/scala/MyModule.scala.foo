@@ -1,0 +1,101 @@
+object MyModule {
+
+  def abs(n: Int): Int =
+    if (n < 0) -n
+    else n
+
+  private def formatAbs(x: Int): String = {
+    val msg = "The absolute value of %d is %d."
+    msg.format(x, abs(x))
+  }
+
+  private def formatFactorail(n: Int): String = {
+    val msg = "The factorail of %d is %d."
+    msg.format(n, factorail(n))
+  }
+
+  def formatResult(name: String, n: Int, f: Int => Int) = {
+    val msg = "The %s of %d is %d"
+    msg.format(name, n, f(n))
+  }
+
+  // println( formatAbs(-42) )
+  // println( formatFactorail(6)
+
+  // val m = formatResult("factorail", 6, factorail)
+  // println("m ----> ", m)
+
+  // def factorail(n: Int): Int = {
+  //   def go(i: Int, j: Int): Int =
+  //     if (j <= 0) i
+  //     else go(i * j, j - 1)
+  //   go(n, n-1)
+  // }
+
+  def factorail(n: Int): Int = {
+    def go(n: Int, acc: Int): Int = {
+      // println("n: ", n, " acc: ", acc )
+      if (n <= 0) acc
+      else go(n - 1, n * acc)
+    }
+    go(n, 1)
+  }
+
+
+  // val i = factorail(3)
+  // println("i ---> ", i)
+
+  // 1 1 2 3 5 8
+  // (n - 1) + (n - 2)
+  // 2 + 1
+
+  // def fib2(n: Int): Int = {
+  //   println("n === > ", n)
+  //   if (n <= 2) 1
+  //   else fib2(n - 1) + fib2(n - 2)
+  // }
+
+  def fib(n: Int): Int = {
+    @annotation.tailrec
+    def loop(n: Int, prev: Int, cur: Int): Int = {
+      println("n : ", n - 1, " prev: ", prev, " cur: ", cur)
+      if (n == 0) prev
+      else {
+        loop(n - 1, cur, prev + cur)
+      }
+    }
+
+    loop(n, 0, 1)
+  }
+
+  // println("=====", fib(6))
+
+  def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean = {
+
+    @annotation.tailrec
+    def loop(n: Int): Boolean =
+      if (n >= as.length - 1) true
+      else if ( ordered(as(n), as(n+1)) ) false
+      else loop(n + 1)
+
+    loop(0)
+  }
+
+  // val arr = Array(1, 2, 3, 4)
+  // val a = isSorted(arr, (a: Int, b: Int) => a > b)
+  // println("a -=-=--> ", a)
+
+  def partiall[A, B, C](a: A, f: (A, B) => C): B => C =
+    (b: B) => f(a, b)
+
+  def curry[A, B, C](f: (A, B) => C): A => (B => C) =
+    a => b => f(a, b)
+  // (a: A) => ((b:B) => f(a, b))
+
+  def uncurry[A, B, C](f: A => B => C): (A, B) => C =
+    (a: A, b: B) => f(a)(b)
+
+  def compose[A, B, C](f: B => C, g: A => B): A => C =
+    a => f(g(a))
+
+}
